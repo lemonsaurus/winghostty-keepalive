@@ -8,6 +8,7 @@ const LPARAM = win.LPARAM;
 
 extern "user32" fn InvalidateRect(hWnd: ?HWND, lpRect: ?*const anyopaque, bErase: BOOL) callconv(.winapi) BOOL;
 extern "user32" fn EnumWindows(lpEnumFunc: *const fn (HWND, LPARAM) callconv(.winapi) BOOL, lParam: LPARAM) callconv(.winapi) BOOL;
+extern "user32" fn EnumChildWindows(hWndParent: ?HWND, lpEnumFunc: *const fn (HWND, LPARAM) callconv(.winapi) BOOL, lParam: LPARAM) callconv(.winapi) BOOL;
 extern "user32" fn GetWindowThreadProcessId(hWnd: HWND, lpdwProcessId: *DWORD) callconv(.winapi) DWORD;
 extern "kernel32" fn Sleep(dwMilliseconds: DWORD) callconv(.winapi) void;
 extern "kernel32" fn CreateToolhelp32Snapshot(dwFlags: DWORD, th32ProcessID: DWORD) callconv(.winapi) win.HANDLE;
@@ -80,11 +81,17 @@ fn isTargetPid(pid: DWORD) bool {
     return false;
 }
 
+fn invalidateChildCb(hwnd: HWND, _: LPARAM) callconv(.winapi) BOOL {
+    _ = InvalidateRect(hwnd, null, 0);
+    return 1;
+}
+
 fn enumTopCb(hwnd: HWND, _: LPARAM) callconv(.winapi) BOOL {
     var pid: DWORD = 0;
     _ = GetWindowThreadProcessId(hwnd, &pid);
     if (isTargetPid(pid)) {
         _ = InvalidateRect(hwnd, null, 0);
+        _ = EnumChildWindows(hwnd, &invalidateChildCb, 0);
     }
     return 1;
 }

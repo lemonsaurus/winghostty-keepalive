@@ -1,5 +1,10 @@
 # winghostty-keepalive
 
+> [!WARNING]
+> This is a dumb little workaround for a winghostty repaint bug.
+> I'm using it until [wintty](https://github.com/deblasis/wintty) is ready.
+> If you're from the future, lucky you, you probably don't need this.
+
 I love ghostty, but Windows support is still a whole thing, so I'm running
 [winghostty](https://github.com/amanthanvi/winghostty) for now.
 
@@ -22,7 +27,8 @@ zig build-exe main.zig -target x86_64-windows-gnu -O ReleaseSmall \
 ```
 
 That gives you `main.exe`, about 4 KB, which is very funny considering the
-PowerShell version used like 100 MB. fuck right off.
+PowerShell version used like 100 MB. fuck right off. I wrote about that whole
+mess [over here](https://www.lemonsaur.us/blog/i-wrote-a-100mb-autoclicker).
 
 ## Install
 
